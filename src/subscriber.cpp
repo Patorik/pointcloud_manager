@@ -1,4 +1,4 @@
-#include "subscriber.h"
+#include "subscriber.hpp"
 
 Subscriber::Subscriber(string &node_name, string &topic_name_sub) : Node(node_name){
     using std::placeholders::_1;
@@ -10,7 +10,7 @@ Subscriber::Subscriber(string &node_name, string &topic_name_sub) : Node(node_na
 void Subscriber::topic_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
 {
     // PCL still uses boost::shared_ptr internally
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>());
 
 
     // This will convert the message into a pcl::PointCloud

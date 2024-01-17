@@ -1,0 +1,4 @@
+#ifndef CONCATENATOR_HPP
+#define CONCATENATOR_HPP
+
+#endif // CONCATENATOR_HPP
