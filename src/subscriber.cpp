@@ -3,8 +3,9 @@
 Subscriber::Subscriber(string &node_name, string &topic_name_sub) : Node(node_name){
     using std::placeholders::_1;
     auto sensor_qos = rclcpp::QoS(rclcpp::SensorDataQoS());
-    subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-    topic_name_sub, sensor_qos, std::bind(&Subscriber::topic_callback, this, _1));
+    subscription_a = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+        topic_name_sub, sensor_qos, std::bind(&Subscriber::topic_callback, this, _1)
+    );
 }
 
 void Subscriber::topic_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)

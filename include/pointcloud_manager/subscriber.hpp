@@ -19,7 +19,8 @@ using std::string;
 
 class Subscriber : public rclcpp::Node{
 private:
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_a;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_b;
     pcl::PCLPointCloud2::Ptr pcl_points;
     std::string topic_name_sub;
 
