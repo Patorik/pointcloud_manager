@@ -13,10 +13,19 @@
 #include <pcl/point_types.h>
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
+#include <pcl/common/transforms.h>
+#include <pcl_ros/transforms.hpp>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h> 
+
+#include "tf2_ros/transform_listener.h"
+#include "tf2_ros/buffer.h"
+
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include <Eigen/Core>
 
 using std::cout;
 using std::string;
@@ -30,6 +39,8 @@ private:
     message_filters::Subscriber<sensor_msgs::msg::PointCloud2> subscription_b;
     pcl::PCLPointCloud2::Ptr pcl_points;
     std::string topic_name_sub;
+    std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
+    std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
 public:
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
     void TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_1, const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_2);
