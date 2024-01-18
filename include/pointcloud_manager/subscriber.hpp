@@ -27,8 +27,15 @@
 #include <Eigen/Geometry>
 #include <Eigen/Core>
 
+#include "tf2_ros/transform_broadcaster.h"
+
+#include <chrono>
+#include <functional>
+#include <memory>
+
 using std::cout;
 using std::string;
+using namespace std::chrono_literals;
 
 typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointCloud2, sensor_msgs::msg::PointCloud2> MySyncPolicy;
 
@@ -41,9 +48,12 @@ private:
     std::string topic_name_sub;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
+    rclcpp::TimerBase::SharedPtr timer_;
+    std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 public:
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
     void TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_1, const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_2);
+    void broadcast_timer_callback();
 };
 
 #endif // SUBSCRIBER_H

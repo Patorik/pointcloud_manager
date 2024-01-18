@@ -4,6 +4,10 @@ Subscriber::Subscriber(string &node_name, string &topic_name_sub_a, string &topi
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
+    tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
+    timer_ = this->create_wall_timer(
+      100ms, std::bind(&Subscriber::broadcast_timer_callback, this));
+
     auto sensor_qos = rclcpp::QoS(rclcpp::SensorDataQoS());
     auto rmw_qos_profile = sensor_qos.get_rmw_qos_profile();
     this->subscription_a.subscribe(
@@ -24,8 +28,6 @@ void Subscriber::TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstShar
         /* RCLCPP_INFO(this->get_logger(),
                 "I heard and synchronized the following timestamps: %u, %u",
                 msg_1->header.stamp.sec, msg_2->header.stamp.sec); */
-
-       
 
         string target_frame = "lexus3/os_center_a_laser_data_frame";        
 
@@ -56,7 +58,39 @@ void Subscriber::TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstShar
         result_cloud += *cloud_1;
         result_cloud += *cloud_2;
 
+        result_cloud.header.frame_id = "world";
         pcl::toROSMsg(result_cloud, result_message);
 
         concatenated_cloud_pub->publish(result_message);
 }
+
+void Subscriber::broadcast_timer_callback()
+  {
+    geometry_msgs::msg::TransformStamped t;
+
+    t.header.stamp = this->get_clock()->now();
+    t.header.frame_id = "world";
+    t.child_frame_id = "lexus3/os_center_a";
+    t.transform.translation.x = 0.0;
+    t.transform.translation.y = 0.0;
+    t.transform.translation.z = 0.0;
+    t.transform.rotation.x = 0.0;
+    t.transform.rotation.y = 0.0;
+    t.transform.rotation.z = 0.0;
+    t.transform.rotation.w = 1.0;
+
+    tf_broadcaster_->sendTransform(t);
+
+    t.header.stamp = this->get_clock()->now();
+    t.header.frame_id = "world";
+    t.child_frame_id = "lexus3/os_right_a";
+    t.transform.translation.x = 0.1;
+    t.transform.translation.y = 0.1;
+    t.transform.translation.z = 0.1;
+    t.transform.rotation.x = 0.0;
+    t.transform.rotation.y = 0.0;
+    t.transform.rotation.z = 0.0;
+    t.transform.rotation.w = 1.0;
+
+    tf_broadcaster_->sendTransform(t);
+  }
