@@ -25,6 +25,7 @@ typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointC
 
 class Subscriber : public rclcpp::Node{
 private:
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr concatenated_cloud_pub;
     message_filters::Subscriber<sensor_msgs::msg::PointCloud2> subscription_a;
     message_filters::Subscriber<sensor_msgs::msg::PointCloud2> subscription_b;
     pcl::PCLPointCloud2::Ptr pcl_points;
