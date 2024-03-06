@@ -42,17 +42,23 @@ typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointC
 class Subscriber : public rclcpp::Node{
 private:
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr concatenated_cloud_pub;
-    message_filters::Subscriber<sensor_msgs::msg::PointCloud2> subscription_a;
-    message_filters::Subscriber<sensor_msgs::msg::PointCloud2> subscription_b;
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_a;
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_b;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_a;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_b;
     pcl::PCLPointCloud2::Ptr pcl_points;
     std::string topic_name_sub;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr timer_for_publishing_;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 public:
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
     void TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_1, const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_2);
+    void callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void publish_pcl_callback();
     void broadcast_timer_callback();
 };
 
