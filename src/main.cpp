@@ -4,7 +4,7 @@ int main(int argc, char ** argv)
 {
   (void)argc;
   (void)argv;
-
+  std::cout << argv[0] << std::endl;
   string node_name = "node_name";
   string topic_name_a = "lexus3/os_left/points";
   string topic_name_b = "lexus3/os_right/points";

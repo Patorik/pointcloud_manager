@@ -4,6 +4,8 @@ Subscriber::Subscriber(string &node_name, string &topic_name_sub_a, string &topi
     Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)),
     cloud_a(new pcl::PointCloud<pcl::PointXYZI>()), cloud_b(new pcl::PointCloud<pcl::PointXYZI>())
 {
+  is_cloud_a_empty = true;
+  is_cloud_b_empty = true;
   tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -79,6 +81,10 @@ void Subscriber::callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstShared
     RCLCPP_INFO( this->get_logger(), "Could not transform %s to %s: %s", target_frame.c_str(), cloud_a->header.frame_id.c_str(), ex.what());
     return;
   }
+  
+  if(is_cloud_a_empty){
+    is_cloud_a_empty = false;
+  }
 }
 
 void Subscriber::callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg){
@@ -98,6 +104,10 @@ void Subscriber::callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstShare
     RCLCPP_INFO( this->get_logger(), "Could not transform %s to %s: %s", target_frame.c_str(), cloud_b->header.frame_id.c_str(), ex.what());
     return;
   }
+
+  if(is_cloud_b_empty){
+    is_cloud_b_empty = false;
+  }
 }
 
 void Subscriber::publish_pcl_callback(){
@@ -105,7 +115,20 @@ void Subscriber::publish_pcl_callback(){
   pcl::PointCloud<pcl::PointXYZI> result_cloud;
   sensor_msgs::msg::PointCloud2 result_message;
   result_cloud += *cloud_a;
-  result_cloud += *cloud_b;
+  
+
+  if(!is_cloud_a_empty){
+    result_cloud += *cloud_a;
+  }else{
+    RCLCPP_INFO( this->get_logger(), "Could a is empty");
+  }
+  
+  if(!is_cloud_b_empty){
+    result_cloud += *cloud_b;
+  }else{
+    RCLCPP_INFO( this->get_logger(), "Could b is empty");
+  }
+  
   
   result_cloud.header.frame_id = "world";
   pcl::toROSMsg(result_cloud, result_message);

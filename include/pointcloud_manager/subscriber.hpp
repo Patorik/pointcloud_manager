@@ -53,6 +53,8 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::TimerBase::SharedPtr timer_for_publishing_;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+    bool is_cloud_a_empty;
+    bool is_cloud_b_empty;
 public:
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
     void TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_1, const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_2);

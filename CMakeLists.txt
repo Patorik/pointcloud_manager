@@ -12,6 +12,7 @@ find_package(pcl_ros)
 find_package(sensor_msgs)
 find_package(std_msgs)
 find_package(visualization_msgs)
+find_package(ros2launch)
 
 find_package(ament_cmake REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
@@ -58,5 +59,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
 
 ament_package()
