@@ -4,6 +4,8 @@ Subscriber::Subscriber(string &node_name, string &topic_name_sub_a, string &topi
     Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)),
     cloud_a(new pcl::PointCloud<pcl::PointXYZI>()), cloud_b(new pcl::PointCloud<pcl::PointXYZI>())
 {
+
+  RCLCPP_INFO(this->get_logger(), "%s, %s", topic_name_sub_a.c_str(), topic_name_sub_b.c_str());
   is_cloud_a_empty = true;
   is_cloud_b_empty = true;
   tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
