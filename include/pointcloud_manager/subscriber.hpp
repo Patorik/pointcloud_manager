@@ -1,5 +1,5 @@
-#ifndef SUBSCRIBER_H
-#define SUBSCRIBER_H
+#ifndef SUBSCRIBER_HPP
+#define SUBSCRIBER_HPP
 
 #include <iostream>
 #include <rclcpp/rclcpp.hpp>
@@ -46,7 +46,6 @@ private:
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_b;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_a;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_b;
-    pcl::PCLPointCloud2::Ptr pcl_points;
     std::string topic_name_sub;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
@@ -64,4 +63,4 @@ public:
     void broadcast_timer_callback();
 };
 
-#endif // SUBSCRIBER_H
+#endif // SUBSCRIBER_HPP
