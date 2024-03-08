@@ -1,5 +1,21 @@
 #include "subscriber.hpp"
 
+Subscriber::Subscriber(string& node_name, std::initializer_list<string> list_of_topic_names) : 
+Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)){
+  std::string target_frame = "lexus3/os_left_a_laser_data_frame";
+
+  tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
+    
+  for(string actual_topic_name : list_of_topic_names){
+    this->vector_of_lidars.push_back(new LidarTopic(actual_topic_name, target_frame, tf_buffer_));
+  }
+  
+  timer_ = this->create_wall_timer(100ms, std::bind(&Subscriber::broadcast_timer_callback, this));
+  timer_for_publishing_ = this->create_wall_timer(50ms, std::bind(&Subscriber::publish_pcl_callback, this));
+
+  this->concatenated_cloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("concatenated_points", 1);
+}
+
 Subscriber::Subscriber(string &node_name, string &topic_name_sub_a, string &topic_name_sub_b) : 
     Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)),
     cloud_a(new pcl::PointCloud<pcl::PointXYZI>()), cloud_b(new pcl::PointCloud<pcl::PointXYZI>())
