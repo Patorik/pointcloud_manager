@@ -4,7 +4,7 @@ int main(int argc, char ** argv)
 {
   (void)argc;
   (void)argv;
-  string node_name = "node_name";
+  string node_name = "pointcloud_manager";
   string topic_name_a = argv[1];
   string topic_name_b = argv[2];
   rclcpp::init(argc, argv);

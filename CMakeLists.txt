@@ -35,16 +35,16 @@ file(GLOB_RECURSE HEADER_FILES
     ${CMAKE_SOURCE_DIR}/include/pointcloud_manager/*.h
     ${CMAKE_SOURCE_DIR}/include/pointcloud_manager/*.hpp)
 
-add_executable(pcl_subscribe ${HEADER_FILES} ${SOURCE_FILES})
-ament_target_dependencies(pcl_subscribe rclcpp geometry_msgs std_msgs sensor_msgs pcl_ros visualization_msgs)
-target_link_libraries(pcl_subscribe ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
+add_executable(pointcloud_manager ${HEADER_FILES} ${SOURCE_FILES})
+ament_target_dependencies(pointcloud_manager rclcpp geometry_msgs std_msgs sensor_msgs pcl_ros visualization_msgs)
+target_link_libraries(pointcloud_manager ${catkin_LIBRARIES} ${Eigen_LIBRARIES})
 
-target_include_directories(pcl_subscribe PUBLIC
+target_include_directories(pointcloud_manager PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(pcl_subscribe PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(pointcloud_manager PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS pcl_subscribe
+install(TARGETS pointcloud_manager
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

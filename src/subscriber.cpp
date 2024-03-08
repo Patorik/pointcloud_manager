@@ -116,8 +116,6 @@ void Subscriber::publish_pcl_callback(){
   // Initialization of variables
   pcl::PointCloud<pcl::PointXYZI> result_cloud;
   sensor_msgs::msg::PointCloud2 result_message;
-  result_cloud += *cloud_a;
-  
 
   if(!is_cloud_a_empty){
     result_cloud += *cloud_a;
@@ -130,7 +128,6 @@ void Subscriber::publish_pcl_callback(){
   }else{
     RCLCPP_INFO( this->get_logger(), "Could b is empty");
   }
-  
   
   result_cloud.header.frame_id = "world";
   pcl::toROSMsg(result_cloud, result_message);
