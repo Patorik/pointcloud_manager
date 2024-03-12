@@ -96,16 +96,8 @@ void Subscriber::publish_pcl_callback(){
   pcl::PointCloud<pcl::PointXYZI> result_cloud;
   sensor_msgs::msg::PointCloud2 result_message;
 
-  if(!is_cloud_a_empty){
-    result_cloud += *cloud_a;
-  }else{
-    RCLCPP_INFO( this->get_logger(), "Could a is empty");
-  }
-  
-  if(!is_cloud_b_empty){
-    result_cloud += *cloud_b;
-  }else{
-    RCLCPP_INFO( this->get_logger(), "Could b is empty");
+  for(unsigned int i=0; i<vector_of_lidars.size(); i++){
+    result_cloud += *vector_of_lidars[i]->getPCL();
   }
   
   result_cloud.header.frame_id = "world";
