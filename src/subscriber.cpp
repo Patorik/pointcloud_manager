@@ -1,13 +1,18 @@
 #include "subscriber.hpp"
 
 Subscriber::Subscriber(string& node_name, std::initializer_list<string> list_of_topic_names) : 
-Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)){
-  std::string target_frame = "lexus3/os_left_a_laser_data_frame";
+Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true))
+{
+  string target_frame = "lexus3/os_left_a_laser_data_frame";
+  string node_name_prefix = "lidar_";
+  int node_name_index = 1;
 
   tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
     
   for(string actual_topic_name : list_of_topic_names){
-    this->vector_of_lidars.push_back(new LidarTopic(actual_topic_name, target_frame, tf_buffer_));
+    string node_name = node_name_prefix + std::to_string(node_name_index);
+    this->vector_of_lidars.push_back(new LidarTopic(node_name, actual_topic_name, target_frame, tf_buffer_));
+    node_name_index++;
   }
   
   timer_ = this->create_wall_timer(100ms, std::bind(&Subscriber::broadcast_timer_callback, this));
@@ -34,46 +39,6 @@ Subscriber::Subscriber(string &node_name, string &topic_name_sub_a, string &topi
   subscription_b = this->create_subscription<sensor_msgs::msg::PointCloud2>(topic_name_sub_b, 1, std::bind(&Subscriber::callbackRightOS, this, std::placeholders::_1));
   
   this->concatenated_cloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("concatenated_points", 1);
-}
-
-void Subscriber::TempSyncCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_1, const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg_2) {
-  /* RCLCPP_INFO(this->get_logger(),
-          "I heard and synchronized the following timestamps: %u, %u",
-          msg_1->header.stamp.sec, msg_2->header.stamp.sec); */
-
-  string target_frame = "lexus3/os_left_a_laser_data_frame";
-
-  // Initialization of variables
-  pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_1(new pcl::PointCloud<pcl::PointXYZI>());
-  pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_2(new pcl::PointCloud<pcl::PointXYZI>());
-  pcl::PointCloud<pcl::PointXYZI> result_cloud;
-  sensor_msgs::msg::PointCloud2 result_message;
-  
-  // This will convert the message into a pcl::PointCloud
-  pcl::fromROSMsg(*msg_1, *cloud_1);
-  pcl::fromROSMsg(*msg_2, *cloud_2);
-
-  // Transform PCL
-  geometry_msgs::msg::TransformStamped transform;
-  try {
-      transform = tf_buffer_->lookupTransform(target_frame, msg_2->header.frame_id, tf2::TimePointZero);
-      pcl_ros::transformPointCloud(*cloud_2, *cloud_2, transform);
-      cloud_2->header.frame_id = target_frame;
-  } catch (const tf2::TransformException & ex) {
-    RCLCPP_INFO(
-      this->get_logger(), "Could not transform %s to %s: %s",
-      target_frame.c_str(), cloud_2->header.frame_id.c_str(), ex.what());
-    return;
-  }
-  
-  // Concatenate PCL
-  result_cloud += *cloud_1;
-  result_cloud += *cloud_2;
-
-  result_cloud.header.frame_id = "world";
-  pcl::toROSMsg(result_cloud, result_message);
-
-  concatenated_cloud_pub->publish(result_message);
 }
 
 void Subscriber::callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg){

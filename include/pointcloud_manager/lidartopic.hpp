@@ -38,6 +38,7 @@ using namespace std::chrono_literals;
 
 class LidarTopic : public rclcpp::Node{
 private:
+    string node_name;
     string target_frame;
     string topic_name;
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
@@ -45,8 +46,10 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription;
     pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud;
 public:
-    LidarTopic(string& topic_name, string& target_frame, std::unique_ptr<tf2_ros::Buffer>& tf_buffer_);
+    LidarTopic(string& node_name, string& topic_name, string& target_frame, std::unique_ptr<tf2_ros::Buffer>& tf_buffer_);
     pcl::PointCloud<pcl::PointXYZI>::Ptr getPCL();
+    string getTopicName();
+    string getTargetFrame();
     void callBackLidar(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
 };
 
