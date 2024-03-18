@@ -1,5 +1,7 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
     return LaunchDescription([
@@ -8,6 +10,8 @@ def generate_launch_description():
             namespace='',
             executable='pointcloud_manager',
             name='pointcloud_manager',
-            arguments=['lexus3/os_left/points','lexus3/os_right/points']
+            emulate_tty=True,
+            prefix=['stdbuf -o L'],
+            arguments=['lexus3/os_left/points','lexus3/os_right/points'],
         )
     ])

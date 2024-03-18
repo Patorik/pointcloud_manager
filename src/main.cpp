@@ -5,12 +5,14 @@ int main(int argc, char ** argv)
   (void)argc;
   (void)argv;
   string node_name = "pointcloud_manager";
-  // string topic_name_a = argv[1];
-  // string topic_name_b = argv[2];
-  std::initializer_list<string> test({"lexus3/os_left/points", "lexus3/os_right/points"});
+  
+  std::vector<string> vector_of_topics;
+  for(int i=1; i<argc-5; i++){
+    vector_of_topics.push_back(argv[i]);
+    std::cout << argv[i] << std::endl;
+  }
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<Subscriber>(node_name, test));
-  // rclcpp::spin(std::make_shared<Subscriber>(node_name, topic_name_a, topic_name_b));
+  rclcpp::spin(std::make_shared<Subscriber>(node_name, vector_of_topics));
   rclcpp::shutdown();
 
   return 0;

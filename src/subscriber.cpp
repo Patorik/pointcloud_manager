@@ -1,6 +1,6 @@
 #include "subscriber.hpp"
 
-Subscriber::Subscriber(string& node_name, std::initializer_list<string> list_of_topic_names) : 
+Subscriber::Subscriber(string& node_name, std::vector<string> list_of_topic_names) : 
 Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true))
 {
   string target_frame = "lexus3/os_left_a_laser_data_frame";

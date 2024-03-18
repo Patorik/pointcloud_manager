@@ -61,7 +61,7 @@ private:
     bool is_cloud_a_empty;
     bool is_cloud_b_empty;
 public:
-    Subscriber(string& node_name, std::initializer_list<string> list_of_topic_names);
+    Subscriber(string& node_name, std::vector<string> list_of_topic_names);
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
     void callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
     void callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
