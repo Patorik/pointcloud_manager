@@ -10,8 +10,6 @@ def generate_launch_description():
             namespace='',
             executable='pointcloud_manager',
             name='pointcloud_manager',
-            emulate_tty=True,
-            prefix=['stdbuf -o L'],
-            arguments=['lexus3/os_left/points','lexus3/os_right/points'],
+            arguments=['lexus3/os_left/points','lexus3/os_right/points']
         )
     ])

@@ -29,8 +29,6 @@
 
 #include "tf2_ros/transform_broadcaster.h"
 
-#include "lidartopic.hpp"
-
 #include <chrono>
 #include <functional>
 #include <memory>
@@ -46,8 +44,8 @@ typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointC
 class Subscriber : public rclcpp::Node{
 private:
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr concatenated_cloud_pub;
-    vector<LidarTopic*> vector_of_lidars;
-    // vector<rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr> vector_of_subscriptions;
+    vector<rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr> vector_of_subscriptions;
+    vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> vector_of_clouds;
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_a;
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_b;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_a;
@@ -61,8 +59,9 @@ private:
     bool is_cloud_a_empty;
     bool is_cloud_b_empty;
 public:
-    Subscriber(string& node_name, std::vector<string> list_of_topic_names);
+    Subscriber(string& node_name, std::vector<string>& list_of_topic_names);
     Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
+    void callbackLidar(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
     void callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
     void callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
     void publish_pcl_callback();
