@@ -33,6 +33,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <functional>
 
 using std::cout;
 using std::string;
@@ -44,26 +45,27 @@ typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointC
 class Subscriber : public rclcpp::Node{
 private:
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr concatenated_cloud_pub;
-    vector<rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr> vector_of_subscriptions;
     vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> vector_of_clouds;
-    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_a;
-    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_b;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_a;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_b;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_c;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_d;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_e;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_f;
     std::string topic_name_sub;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::TimerBase::SharedPtr timer_for_publishing_;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
-    bool is_cloud_a_empty;
-    bool is_cloud_b_empty;
 public:
-    Subscriber(string& node_name, std::vector<string>& list_of_topic_names);
-    Subscriber(string& node_name, string &topic_name_sub_a, string &topic_name_sub_b);
-    void callbackLidar(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
-    void callbackRightOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
-    void callbackLeftOS(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    Subscriber(string& node_name, std::vector<string>& list_of_topic_names); 
+    void callbackA(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackB(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackC(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackD(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackE(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
+    void callbackF(const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
     void publish_pcl_callback();
     void broadcast_timer_callback();
 };
